@@ -4,6 +4,7 @@ import BlogList from "./BlogList";
 const Home = () => {
   //reactive values
   const [blogs, setBlogs] = useState(null);
+  const [isPending, setIsPending] = useState(true);
 
   useEffect(() => {
     fetch("http://localhost:8001/blogs")
@@ -11,7 +12,8 @@ const Home = () => {
         return res.json();
       })
       .then((data) => {
-        return setBlogs(data);
+        setBlogs(data);
+        setIsPending(false);
       });
   }, []);
 
@@ -22,6 +24,7 @@ const Home = () => {
 
   return (
     <div className="home">
+      {isPending && <div>Loading...</div>}
       {blogs && (
         <BlogList
           blogs={blogs}
