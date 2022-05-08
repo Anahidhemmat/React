@@ -5,14 +5,23 @@ const Home = () => {
   //reactive values
   const [blogs, setBlogs] = useState(null);
   const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:8001/blogs")
       .then((res) => {
+        if (!res.ok) {
+          throw Error("could not fetch the data");
+        }
         return res.json();
       })
       .then((data) => {
         setBlogs(data);
+        setIsPending(false);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(err.message);
         setIsPending(false);
       });
   }, []);
@@ -24,6 +33,7 @@ const Home = () => {
 
   return (
     <div className="home">
+      {error && <div>{error}</div>}
       {isPending && <div>Loading...</div>}
       {blogs && (
         <BlogList
